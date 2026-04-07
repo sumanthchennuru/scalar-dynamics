@@ -1,71 +1,109 @@
 import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import ProductDetail from "./pages/ProductDetail";
 
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import Login from "./pages/Login";
+import About from "./pages/About"; // ✅ NEW
 
-import Home from "./pages/Home.jsx";
-import Products from "./pages/Products.jsx";
-import Cart from "./pages/Cart.jsx";
-import ProductDetail from "./pages/ProductDetail.jsx";
-import Services from "./pages/Services.jsx";
-import About from "./pages/About.jsx";
-import RCSystems from "./pages/RCSystems.jsx";
-import PCB from "./pages/PCB.jsx";
-import Printing from "./pages/Printing.jsx";
-import CAD from "./pages/CAD.jsx";
-import Login from "./pages/Login.jsx";
-import Contact from "./pages/Contact.jsx";
+function AnimatedRoutes() {
+  const location = useLocation();
+  const isLoggedIn = !!localStorage.getItem("user");
 
-function App() {
-const isLoggedIn = localStorage.getItem("user");
-const handleLogout = () => {
-  localStorage.removeItem("user");
-  window.location.href = "/login";
-};
   return (
-    <Router>
-
-      {/* NAVBAR */}
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/products">Products</Link>
-        <Link to="/cart">Cart</Link>
-        <Link to="/services">Services</Link>
-        <Link to="/rc-systems">RC Systems</Link>
-        <Link to="/about">About</Link>
-	<Link to="/contact">Contact</Link>
-	{localStorage.getItem("user") ? (
-  <button onClick={handleLogout}>Logout</button>
-) : (
-  <Link to="/login">Login</Link>
-)}
-      </nav>
-
-      {/* PAGE ANIMATION */}
+    <AnimatePresence mode="wait">
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        key={location.pathname}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -40 }}
+        transition={{ duration: 0.4 }}
       >
-        <Routes>
+        <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
-	  <Route
-  path="/cart"
-  element={isLoggedIn ? <Cart /> : <Navigate to="/login" />}
-/>
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/rc-systems" element={<RCSystems />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/pcb" element={<PCB />} />
-          <Route path="/printing" element={<Printing />} />
-          <Route path="/cad" element={<CAD />} />
-	  <Route path="/login" element={<Login />} />
-	  <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} /> {/* ✅ NEW */}
+	  <Route path="/product/:id" element={<ProductDetail />} />
+
+          {/* 🔐 Protected Routes */}
+          <Route
+            path="/cart"
+            element={isLoggedIn ? <Cart /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/orders"
+            element={isLoggedIn ? <Orders /> : <Navigate to="/login" />}
+          />
+
+          <Route path="/login" element={<Login />} />
         </Routes>
       </motion.div>
+    </AnimatePresence>
+  );
+}
 
+function App() {
+  const isLoggedIn = !!localStorage.getItem("user");
+
+  // 🔥 LOGOUT FUNCTION
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("orders");
+    localStorage.removeItem("hasOrdered");
+
+    alert("Logged out successfully 👋");
+
+    window.location.href = "/login";
+  };
+
+  return (
+    <Router>
+      {/* 🔝 NAVBAR */}
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "20px",
+          padding: "15px",
+          background: "#020617",
+        }}
+      >
+        <Link to="/" style={{ color: "cyan" }}>Home</Link>
+        <Link to="/products" style={{ color: "cyan" }}>Products</Link>
+        <Link to="/about" style={{ color: "cyan" }}>About</Link> {/* ✅ NEW */}
+        <Link to="/cart" style={{ color: "cyan" }}>Cart</Link>
+        <Link to="/orders" style={{ color: "cyan" }}>Orders</Link>
+
+        {/* 🔐 Show Logout only if logged in */}
+        {isLoggedIn && (
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "8px 14px",
+              background: "#ef4444",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
+        )}
+      </nav>
+
+      <AnimatedRoutes />
     </Router>
   );
 }

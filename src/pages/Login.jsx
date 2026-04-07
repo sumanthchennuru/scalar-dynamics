@@ -7,36 +7,41 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (email === "admin@gmail.com" && password === "1234") {
-      localStorage.setItem("user", "loggedIn");
-      navigate("/");
+    if (email.trim() !== "" && password.trim() !== "") {
+      localStorage.setItem("user", email);
+window.location.href = "/";
+      alert("Login successful ✅");
+      
     } else {
-      alert("Invalid credentials");
+      alert("Please enter email and password");
     }
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "100px" }}>
-      <h2>Login ⚡</h2>
+    <div style={{ padding: "40px", textAlign: "center" }}>
+      <h1>Login</h1>
 
       <input
-        placeholder="Email"
+        value={email}
+        placeholder="Enter Email"
         onChange={(e) => setEmail(e.target.value)}
-        style={{ padding: "10px", margin: "10px" }}
+        style={{ display: "block", margin: "10px auto", padding: "10px" }}
       />
-
-      <br />
 
       <input
+        value={password}
         type="password"
-        placeholder="Password"
+        placeholder="Enter Password"
         onChange={(e) => setPassword(e.target.value)}
-        style={{ padding: "10px", margin: "10px" }}
+        style={{ display: "block", margin: "10px auto", padding: "10px" }}
       />
 
-      <br />
-
-      <button onClick={handleLogin}>Login</button>
+      <button
+        onClick={handleLogin}
+        style={{ padding: "10px 20px", marginTop: "10px" }}
+      >
+        Login
+      </button>
     </div>
   );
 }

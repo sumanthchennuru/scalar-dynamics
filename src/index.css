@@ -1,11 +1,8 @@
 body {
-  margin: 0;
+  background: linear-gradient(135deg, #020617, #0f172a);
+  color: white;
   font-family: "Poppins", sans-serif;
-  background: radial-gradient(circle at top, #020617, #000000);
-  color: #e2e8f0;
-}
-
-/* NAVBAR - CYBER STYLE */
+}/* NAVBAR - CYBER STYLE */
 nav {
   display: flex;
   justify-content: center;
@@ -52,6 +49,20 @@ nav a:hover {
   transform: translateY(-10px);
   box-shadow: 0 0 25px cyan;
 }
+.cart-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #020617, #0f172a);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  transition: 0.3s;
+}
+
+.cart-item:hover {
+  transform: scale(1.02);
+}
 
 /* BUTTON */
 button {
@@ -63,6 +74,73 @@ button {
   cursor: pointer;
 }
 
+h2 {
+  text-shadow: 0 0 10px #38bdf8;
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@keyframes glassSlide {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+.cart-item {
+  display: flex;
+  gap: 20px;
+  padding: 15px;
+  margin: 10px 0;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.order-card {
+  background: rgba(255,255,255,0.08);
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+/* 💎 GLASS POPUP */
+.glass-popup {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px 28px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-weight: bold;
+  animation: slideDown 0.4s ease;
+}
+
+/* 🔥 ANIMATION */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
 button:hover {
   box-shadow: 0 0 20px cyan;
 }
