@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // ✅ IMAGE IMPORTS
@@ -30,7 +30,7 @@ const products = [
 ];
 
 // ✅ PRODUCT CARD
-function ProductCard({ product, addToCart }) {
+function ProductCard({ product, handleAddToCart }) {
   return (
     <div className="card">
       <img
@@ -47,7 +47,9 @@ function ProductCard({ product, addToCart }) {
       <h3>{product.name}</h3>
       <p>₹{product.price}</p>
 
-      <button onClick={() => addToCart(product)}>Add to Cart</button>
+      <button onClick={() => handleAddToCart(product)}>
+        Add to Cart
+      </button>
 
       <Link to={`/product/${product.id}`}>
         <button style={{ marginTop: "10px" }}>View Details</button>
@@ -59,12 +61,39 @@ function ProductCard({ product, addToCart }) {
 // ✅ PROP VALIDATION
 ProductCard.propTypes = {
   product: PropTypes.object.isRequired,
-  addToCart: PropTypes.func.isRequired
+  handleAddToCart: PropTypes.func.isRequired
 };
 
 // ✅ MAIN COMPONENT
 function Products() {
   const { addToCart } = useContext(CartContext);
+  const navigate = useNavigate();
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMsg, setPopupMsg] = useState("");
+
+  const handleAddToCart = (product) => {
+    const isLoggedIn = localStorage.getItem("user");
+
+    if (!isLoggedIn) {
+      setPopupMsg("⚠️ Please login first!");
+      setShowPopup(true);
+
+      setTimeout(() => {
+        setShowPopup(false);
+        navigate("/login"); // redirect after popup
+      }, 1500);
+
+      return;
+    }
+
+    addToCart(product);
+
+    setPopupMsg("Added to cart ✅");
+    setShowPopup(true);
+
+    setTimeout(() => setShowPopup(false), 1500);
+  };
 
   return (
     <div style={{ padding: "40px" }}>
@@ -80,9 +109,16 @@ function Products() {
         }}
       >
         {products.map((p) => (
-          <ProductCard key={p.id} product={p} addToCart={addToCart} />
+          <ProductCard
+            key={p.id}
+            product={p}
+            handleAddToCart={handleAddToCart}
+          />
         ))}
       </div>
+
+      {/* 💎 POPUP */}
+      {showPopup && <div className="glass-popup">{popupMsg}</div>}
     </div>
   );
 }
